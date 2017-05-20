@@ -1,12 +1,18 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : MonoBehaviour {
+public class Player : Character {
 
+  private const int MAX_HEALTH = 1000;
   private const float DEADZONE = 0.4f;
 
-  public Animator animator;
+  public Animator animatorL;
+  public Animator animatorD;
+  public HealthBar healthBar;
+
+  private int currentHealth;
 
   private bool right;
   private bool left;
@@ -17,9 +23,18 @@ public class Player : MonoBehaviour {
   private bool lDown;
   private bool rDown;
 
+  private Animator[] animators;
+
+  protected bool inShadow;
+  protected bool inLight;
+
   // Use this for initialization
   void Start() {
-  	
+    healthBar.initialize(MAX_HEALTH);
+    currentHealth = MAX_HEALTH;
+    animators = new Animator[2];
+    animators[0] = animatorL;
+    animators[1] = animatorD;
   }
 
   // Update is called once per frame
@@ -29,13 +44,18 @@ public class Player : MonoBehaviour {
 
   // FixedUpdate is called once per physics frame
   void FixedUpdate() {
-    holdingUp();
-    holdingDown();
-    holdingRight();
-    holdingLeft();
-    buttonPressed("A", ref aDown);
-    buttonPressed("L", ref lDown);
-    buttonPressed("R", ref rDown);
+    setAnimatorBools("holdingUp", holdingUp());
+    setAnimatorBools("holdingDown", holdingDown());
+    setAnimatorBools("holdingRight", holdingRight());
+    setAnimatorBools("holdingLeft", holdingLeft());
+    setAnimatorBools("aPressed", buttonPressed("A", ref aDown));
+    setAnimatorBools("lPressed", buttonPressed("L", ref lDown));
+    setAnimatorBools("rPressed", buttonPressed("R", ref rDown));
+  }
+
+  public void setAnimatorBools(String boolName, bool val) {
+    foreach (Animator ani in animators)
+      ani.SetBool(boolName, val);
   }
 
   private bool holdingUp() {
@@ -72,5 +92,15 @@ public class Player : MonoBehaviour {
         heldDown = false;
       return false;
     }
+  }
+
+  public override void takeDamage(int damage) {
+    currentHealth -= damage;
+    healthBar.updateHealthDamage(currentHealth);
+    
+    if (0 >= currentHealth)
+      Debug.Log("Dead");
+
+    //Apply knocback
   }
 }
