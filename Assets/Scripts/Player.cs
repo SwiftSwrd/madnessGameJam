@@ -6,6 +6,8 @@ public class Player : MonoBehaviour {
 
   private const float DEADZONE = 0.4f;
 
+  public Animator animator;
+
   private bool right;
   private bool left;
   private bool up;
