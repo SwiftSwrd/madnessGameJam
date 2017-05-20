@@ -8,8 +8,11 @@ public class Player : Character {
   private const int MAX_HEALTH = 1000;
   private const float DEADZONE = 0.4f;
 
+  public new GameObject light;
+  public GameObject dark;
   public Animator animatorL;
   public Animator animatorD;
+
   public HealthBar healthBar;
 
   private int currentHealth;
@@ -51,11 +54,23 @@ public class Player : Character {
     setAnimatorBools("aPressed", buttonPressed("A", ref aDown));
     setAnimatorBools("lPressed", buttonPressed("L", ref lDown));
     setAnimatorBools("rPressed", buttonPressed("R", ref rDown));
+    face();
   }
 
   public void setAnimatorBools(String boolName, bool val) {
     foreach (Animator ani in animators)
       ani.SetBool(boolName, val);
+  }
+
+  private void face() {
+    if(animators[0].GetBool("holdingRight")) {
+      light.transform.localEulerAngles = new Vector3(0, 0, 0);
+      dark.transform.localEulerAngles = new Vector3(0, 0, 0);
+    }
+    else if(animators[0].GetBool("holdingLeft")) {
+      light.transform.localEulerAngles = new Vector3(0, 180, 0);
+      dark.transform.localEulerAngles = new Vector3(0, 180, 0);
+    }
   }
 
   private bool holdingUp() {
