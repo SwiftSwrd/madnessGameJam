@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Jump : StateMachineBehaviour {
 
-  private const float upwardVelocity = 6f;
+  private const float upwardVelocity = 7f;
   private const float horizontalVelocity = 1.5f;
 
   // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
