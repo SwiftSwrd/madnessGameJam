@@ -14,8 +14,6 @@ public class GroundEnemyMove : Move {
       collision.GetComponentInParent<SinglePlayerChar>().transform.position.x
       < me.transform.position.x;
 
-    Debug.Log(toMyLeft);
-
     if(toMyLeft)
       baseTransform.localEulerAngles = new Vector3(0, 180, 0);
     else

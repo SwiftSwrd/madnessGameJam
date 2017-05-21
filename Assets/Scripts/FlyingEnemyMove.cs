@@ -11,7 +11,7 @@ public class FlyingEnemyMove : Move {
     float realSpeed = speed * Time.deltaTime;
     if(collision.CompareTag(tag)) {
       baseTransform.position =
-        Vector2.MoveTowards(transform.position, collision.transform.position, speed);
+        Vector2.MoveTowards(transform.position, collision.transform.position, realSpeed);
     }
   }
 }

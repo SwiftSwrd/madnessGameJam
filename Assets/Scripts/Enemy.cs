@@ -19,11 +19,7 @@ public abstract class Enemy : Character {
   }
 
   public override void takeDamage(int damage, float damageSourceX) {
-    Debug.Log(currentHealth);
-
     currentHealth -= damage;
-
-    Debug.Log(currentHealth);
 
     if (0 >= currentHealth)
       Destroy(gameObject);
@@ -33,8 +29,9 @@ public abstract class Enemy : Character {
 
   public override void knockback(float from) {
     Vector2 knockbackVector;
-    movescript.enabled = false;
+
     myHurtbox.enabled = false;
+    movescript.GetComponent<BoxCollider2D>().enabled = false;
 
     knockbackVector = new Vector2((transform.position.x < from)
       ? -knockbackBackVel : knockbackBackVel, knockbackUpVel);
@@ -46,7 +43,7 @@ public abstract class Enemy : Character {
   private IEnumerator deStagger() {
     yield return new WaitForSeconds(1);
     GetComponent<Rigidbody2D>().velocity = new Vector2(0,0);
-    movescript.enabled = true;
+    movescript.GetComponent<BoxCollider2D>().enabled = true;
     myHurtbox.enabled = true;
   }
 
