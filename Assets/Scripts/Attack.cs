@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class Attack : MonoBehaviour {
 
+  public int damage;
+
   private void OnTriggerEnter2D(Collider2D collision) {
     Character character = collision.GetComponentInParent<Character>();
-    character.takeDamage(10);
+    character.takeDamage(damage, this.GetComponentInParent<Transform>().position.x);
   }
-
 }

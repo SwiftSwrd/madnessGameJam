@@ -8,10 +8,12 @@ public class Player : Character {
   private const int MAX_HEALTH = 1000;
   private const float DEADZONE = 0.4f;
 
-  public new GameObject light;
-  public GameObject dark;
-  public Animator animatorL;
-  public Animator animatorD;
+  private const float knockbackUpVel = 1.5f;
+  private const float knockbackBackVel = 3f;
+
+  public GameObject lightChar, darkChar;
+  public SinglePlayerChar lightScript, darkScript;
+  public Animator animatorL, animatorD;
 
   public HealthBar healthBar;
 
@@ -62,14 +64,19 @@ public class Player : Character {
       ani.SetBool(boolName, val);
   }
 
+  public void setAnimatorTriggers(String trigName) {
+    foreach (Animator ani in animators)
+      ani.SetTrigger(trigName);
+  }
+
   private void face() {
-    if(animators[0].GetBool("holdingRight")) {
-      light.transform.localEulerAngles = new Vector3(0, 0, 0);
-      dark.transform.localEulerAngles = new Vector3(0, 0, 0);
+    if(animatorL.GetBool("holdingRight")) {
+      lightChar.transform.localEulerAngles = new Vector3(0, 0, 0);
+      darkChar.transform.localEulerAngles = new Vector3(0, 0, 0);
     }
-    else if(animators[0].GetBool("holdingLeft")) {
-      light.transform.localEulerAngles = new Vector3(0, 180, 0);
-      dark.transform.localEulerAngles = new Vector3(0, 180, 0);
+    else if(animatorL.GetBool("holdingLeft")) {
+      lightChar.transform.localEulerAngles = new Vector3(0, 180, 0);
+      darkChar.transform.localEulerAngles = new Vector3(0, 180, 0);
     }
   }
 
@@ -109,13 +116,41 @@ public class Player : Character {
     }
   }
 
-  public override void takeDamage(int damage) {
+  public override void takeDamage(int damage, float damageSourceX) {
+    if (animatorL.GetBool("blocking"))
+      block(damage);
+    else
+      hit(damage, damageSourceX);
+  }
+
+  private void block(int damage) {
+    currentHealth -= damage/2;
+    healthBar.updateHealthDamage(currentHealth);
+
+    if (0 >= currentHealth)
+      setAnimatorTriggers("dead");
+  }
+
+  private void hit(int damage, float damageSourceX) {
+    Vector2 knockbackVector;
+
     currentHealth -= damage;
     healthBar.updateHealthDamage(currentHealth);
-    
-    if (0 >= currentHealth)
-      Debug.Log("Dead");
 
-    //Apply knocback
+    if (0 >= currentHealth)
+      setAnimatorTriggers("dead");
+    else
+      setAnimatorTriggers("hit");
+
+    knockbackVector = new Vector2( (lightChar.transform.position.x < damageSourceX)
+      ? -knockbackBackVel : knockbackBackVel, knockbackUpVel );
+
+    lightChar.GetComponent<Rigidbody2D>().velocity = knockbackVector;
+    darkChar.GetComponent<Rigidbody2D>().velocity = knockbackVector;
+  }
+
+  public void attack() {
+    lightScript.attack(inLight);
+    darkScript.attack(inShadow);
   }
 }

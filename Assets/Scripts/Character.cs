@@ -4,5 +4,5 @@ using UnityEngine;
 
 public abstract class Character : MonoBehaviour {
 
-  public abstract void takeDamage(int damage);
+  public abstract void takeDamage(int damage, float damageSourceX);
 }
