@@ -153,4 +153,12 @@ public class Player : Character {
     lightScript.attack(inLight);
     darkScript.attack(inShadow);
   }
+
+  public void setInLight(bool inLight) {
+    this.inLight = inLight;
+  }
+
+  public void setInShadow(bool inShadow) {
+    this.inShadow = inShadow;
+  }
 }

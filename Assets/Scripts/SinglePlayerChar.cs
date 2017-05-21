@@ -16,6 +16,10 @@ public class SinglePlayerChar : MonoBehaviour {
     myHitbox.size = new Vector2(0, 0);
   }
 
+  private void startAttack() {
+    GetComponentInParent<Player>().attack();
+  }
+
   public void attack(bool inElement) {
     if (inElement)
       myHitbox.size = hitboxSize;
