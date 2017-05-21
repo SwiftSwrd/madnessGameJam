@@ -3,41 +3,60 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Enemy : Character {
+public abstract class Enemy : Character {
 
-  private const float knockbackUpVel = .5f;
-  private const float knockbackBackVel = 1f;
+  protected float knockbackUpVel;
+  protected float knockbackBackVel;
+  public BoxCollider2D myHurtbox;
 
   public int maxHealth;
   private int currentHealth;
 
-  // Use this for initialization
-  void Start () {
-  	
-  }
+  public Move movescript;
 
-  // Update is called once per frame
-  void Update () {
-  	
+  protected void super() {
+    currentHealth = maxHealth;
   }
 
   public override void takeDamage(int damage, float damageSourceX) {
-    Vector2 knockbackVector;
+    Debug.Log(currentHealth);
 
     currentHealth -= damage;
 
-    if (0 >= currentHealth)
-      Destroy(this);
+    Debug.Log(currentHealth);
 
-    knockbackVector = new Vector2((transform.position.x < damageSourceX)
+    if (0 >= currentHealth)
+      Destroy(gameObject);
+
+    knockback(damageSourceX);
+  }
+
+  public override void knockback(float from) {
+    Vector2 knockbackVector;
+    movescript.enabled = false;
+    myHurtbox.enabled = false;
+
+    knockbackVector = new Vector2((transform.position.x < from)
       ? -knockbackBackVel : knockbackBackVel, knockbackUpVel);
 
     GetComponent<Rigidbody2D>().velocity = knockbackVector;
+    StartCoroutine(deStagger());
+  }
+
+  private IEnumerator deStagger() {
+    yield return new WaitForSeconds(1);
+    GetComponent<Rigidbody2D>().velocity = new Vector2(0,0);
+    movescript.enabled = true;
+    myHurtbox.enabled = true;
   }
 
   public void blocked(float playerX) {
-    GetComponent<Rigidbody2D>().velocity = new Vector2(
-      (transform.position.x < playerX)
-      ? -knockbackBackVel*4 : knockbackBackVel*4, knockbackUpVel*2);
+    knockbackBackVel *= 2;
+    knockbackUpVel *= 2;
+
+    knockback(playerX);
+
+    knockbackBackVel /= 2;
+    knockbackUpVel /= 2;
   }
 }

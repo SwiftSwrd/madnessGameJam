@@ -8,8 +8,8 @@ public class Player : Character {
   private const int MAX_HEALTH = 1000;
   private const float DEADZONE = 0.4f;
 
-  private const float knockbackUpVel = 1.5f;
-  private const float knockbackBackVel = 3f;
+  private const float knockbackUpVel = 2f;
+  private const float knockbackBackVel = 5f;
 
   public GameObject lightChar, darkChar;
   public SinglePlayerChar lightScript, darkScript;
@@ -132,7 +132,6 @@ public class Player : Character {
   }
 
   private void hit(int damage, float damageSourceX) {
-    Vector2 knockbackVector;
 
     currentHealth -= damage;
     healthBar.updateHealthDamage(currentHealth);
@@ -142,8 +141,14 @@ public class Player : Character {
     else
       setAnimatorTriggers("hit");
 
-    knockbackVector = new Vector2( (lightChar.transform.position.x < damageSourceX)
-      ? -knockbackBackVel : knockbackBackVel, knockbackUpVel );
+    knockback(damageSourceX);
+  }
+
+  public override void knockback(float from) {
+    Vector2 knockbackVector;
+
+    knockbackVector = new Vector2((lightChar.transform.position.x < from)
+      ? -knockbackBackVel : knockbackBackVel, knockbackUpVel);
 
     lightChar.GetComponent<Rigidbody2D>().velocity = knockbackVector;
     darkChar.GetComponent<Rigidbody2D>().velocity = knockbackVector;

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class flyingEnemyMove : MonoBehaviour {
+public class Move : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
