@@ -6,8 +6,8 @@ public class GroundEnemy : Enemy {
 
   private void Start() {
     super();
-    knockbackUpVel = 1.5f;
-    knockbackBackVel = 4f;
+    knockbackUpVel = 1f;
+    knockbackBackVel = 2f;
   }
 
 }

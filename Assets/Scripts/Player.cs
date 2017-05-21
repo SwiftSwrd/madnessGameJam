@@ -57,6 +57,8 @@ public class Player : Character {
     setAnimatorBools("lPressed", buttonPressed("L", ref lDown));
     setAnimatorBools("rPressed", buttonPressed("R", ref rDown));
     face();
+    darkChar.transform.position = new Vector3( lightChar.transform.position.x,
+      darkChar.transform.position.y, darkChar.transform.position.z);
   }
 
   public void setAnimatorBools(String boolName, bool val) {
@@ -128,7 +130,7 @@ public class Player : Character {
     healthBar.updateHealthDamage(currentHealth);
 
     if (0 >= currentHealth)
-      setAnimatorTriggers("dead");
+      die();
   }
 
   private void hit(int damage, float damageSourceX) {
@@ -137,7 +139,7 @@ public class Player : Character {
     healthBar.updateHealthDamage(currentHealth);
 
     if (0 >= currentHealth)
-      setAnimatorTriggers("dead");
+      die();
     else
       setAnimatorTriggers("hit");
 
@@ -165,5 +167,17 @@ public class Player : Character {
 
   public void setInShadow(bool inShadow) {
     this.inShadow = inShadow;
+  }
+
+  private void die() {
+    setAnimatorTriggers("dead");
+    Time.timeScale = 0.001f;
+    StartCoroutine(endGame());
+  }
+
+  private IEnumerator endGame() {
+    yield return new WaitForSecondsRealtime(5);
+    Time.timeScale = 1f;
+    Application.LoadLevel(0);
   }
 }

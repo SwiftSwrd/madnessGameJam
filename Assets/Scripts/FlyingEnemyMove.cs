@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class FlyingEnemyMove : Move {
 
-  private const float speed = 0.025f;
+  private const float speed = 1f;
   public Transform baseTransform;
 
   private void OnTriggerStay2D(Collider2D collision) {
